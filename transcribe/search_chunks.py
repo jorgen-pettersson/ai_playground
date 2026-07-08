@@ -1,26 +1,7 @@
 import argparse
 
-from berget_rag import DEFAULTS, connect_db, create_client, default_db_url, embed_text, vector_literal
-
-
-# --select id, 1 - (embedding <=> cast(%s as vector)) as similarity
-def _find_matches(conn, course_id: str, embedding: list[float], min_similarity: float) -> list[tuple[int, float]]:
-    with conn.cursor() as cur:
-        cur.execute(
-            """
-            select id, similarity
-            from (
-                select id, 1 - (embedding <=> %s) as similarity
-                from chunks
-                where course_id = %s
-            ) matches
-            where similarity >= %s
-            order by similarity desc, id asc
-            -- limit 10    
-            """,
-            (vector_literal(embedding), course_id, min_similarity),
-        )
-        return [(row[0], float(row[1])) for row in cur.fetchall()]
+from berget_rag import DEFAULTS, create_client, embed_text
+from chunk_repository import connect_db, default_db_url, search_course_chunks
 
 
 def main() -> int:
@@ -37,6 +18,7 @@ def main() -> int:
     parser.add_argument("--expected-embedding-dimensions", type=int, default=DEFAULTS["expected_embedding_dimensions"], help="Expected embedding dimension size for database validation")
     parser.add_argument("--api-base-url", default=DEFAULTS["api_base_url"], help="Berget API base URL")
     parser.add_argument("--min-similarity", type=float, default=0.7, help="Minimum cosine similarity to count as a match")
+    parser.add_argument("--limit", type=int, default=10, help="Maximum number of rows to return")
     args = parser.parse_args()
 
     if not args.db_url:
@@ -52,14 +34,12 @@ def main() -> int:
         args.expected_embedding_dimensions,
         role="query",
     )
-    
-    print(embedding)
 
     with connect_db(args.db_url) as conn:
-        matches = _find_matches(conn, args.course_id, embedding, args.min_similarity)
+        matches = search_course_chunks(conn, args.course_id, embedding, args.min_similarity, args.limit)
 
-    for row_id, similarity in matches:
-        print(f"{row_id}\t{similarity:.6f}")
+    for match in matches:
+        print(f"{match['id']}\t{float(match['similarity']):.6f}")
     return 0
 
 

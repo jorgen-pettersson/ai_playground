@@ -1,0 +1,13 @@
+/home/jorgen/dev/ai_playground/transcribe/api/src/main/java/se/jorgen/transcribe/api/ApiApplication.java
+/home/jorgen/dev/ai_playground/transcribe/api/src/main/java/se/jorgen/transcribe/api/client/BergetApiClient.java
+/home/jorgen/dev/ai_playground/transcribe/api/src/main/java/se/jorgen/transcribe/api/config/RagProperties.java
+/home/jorgen/dev/ai_playground/transcribe/api/src/main/java/se/jorgen/transcribe/api/controller/ChatCompletionsController.java
+/home/jorgen/dev/ai_playground/transcribe/api/src/main/java/se/jorgen/transcribe/api/controller/HealthController.java
+/home/jorgen/dev/ai_playground/transcribe/api/src/main/java/se/jorgen/transcribe/api/controller/ModelsController.java
+/home/jorgen/dev/ai_playground/transcribe/api/src/main/java/se/jorgen/transcribe/api/model/ChunkMatch.java
+/home/jorgen/dev/ai_playground/transcribe/api/src/main/java/se/jorgen/transcribe/api/model/openai/ChatCompletionRequest.java
+/home/jorgen/dev/ai_playground/transcribe/api/src/main/java/se/jorgen/transcribe/api/model/openai/ChatMessageRequest.java
+/home/jorgen/dev/ai_playground/transcribe/api/src/main/java/se/jorgen/transcribe/api/repository/ChunkSearchRepository.java
+/home/jorgen/dev/ai_playground/transcribe/api/src/main/java/se/jorgen/transcribe/api/service/ChunkSearchService.java
+/home/jorgen/dev/ai_playground/transcribe/api/src/main/java/se/jorgen/transcribe/api/service/CourseRagService.java
+/home/jorgen/dev/ai_playground/transcribe/api/src/main/java/se/jorgen/transcribe/api/service/PromptBuilder.java

@@ -1,0 +1,17 @@
+se/jorgen/transcribe/api/model/openai/ChatCompletionRequest.class
+se/jorgen/transcribe/api/service/CourseRagService.class
+se/jorgen/transcribe/api/service/ChunkSearchService.class
+se/jorgen/transcribe/api/config/RagProperties$Retrieval.class
+se/jorgen/transcribe/api/controller/ModelsController.class
+se/jorgen/transcribe/api/service/PromptBuilder.class
+se/jorgen/transcribe/api/config/RagProperties.class
+se/jorgen/transcribe/api/controller/ChatCompletionsController.class
+se/jorgen/transcribe/api/controller/HealthController.class
+se/jorgen/transcribe/api/client/BergetApiClient.class
+se/jorgen/transcribe/api/model/openai/ChatMessageRequest.class
+se/jorgen/transcribe/api/config/RagProperties$Berget.class
+se/jorgen/transcribe/api/client/BergetApiClient$1.class
+se/jorgen/transcribe/api/model/ChunkMatch.class
+se/jorgen/transcribe/api/service/CourseRagService$PreparedContext.class
+se/jorgen/transcribe/api/repository/ChunkSearchRepository.class
+se/jorgen/transcribe/api/ApiApplication.class

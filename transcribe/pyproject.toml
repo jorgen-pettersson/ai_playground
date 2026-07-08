@@ -6,10 +6,12 @@ readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
     "datasets>=5.0.0",
+    "fastapi>=0.116.1",
     "numpy>=2.5.0",
     "openai>=2.43.0",
     "pillow>=11.3.0",
     "psycopg[binary]>=3.2.10",
     "torch>=2.12.1",
     "transformers>=5.12.1",
+    "uvicorn[standard]>=0.35.0",
 ]

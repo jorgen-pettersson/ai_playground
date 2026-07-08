@@ -6,7 +6,8 @@ from pathlib import Path
 
 from transformers import AutoTokenizer
 
-from berget_rag import DEFAULTS, connect_db, create_client, default_db_url, embed_text, vector_literal
+from berget_rag import DEFAULTS, create_client, embed_text
+from chunk_repository import connect_db, default_db_url, delete_chunks_for_source, insert_chunk_rows
 
 
 DEFAULTS = DEFAULTS | {
@@ -190,58 +191,6 @@ def _filter_rows(rows: list[dict], min_chars: int) -> tuple[list[dict], int]:
     return filtered, skipped
 
 
-def _replace_source(cur, course_id: str, presentation_id: str) -> int:
-    cur.execute(
-        "delete from chunks where course_id = %s and presentation_id = %s",
-        (course_id, presentation_id),
-    )
-    return cur.rowcount
-
-
-def _insert_rows(conn, rows: list[dict], embeddings: list[list[float]], course_id: str, presentation_id: str, video_file: str | None) -> int:
-    inserted = 0
-
-    with conn.cursor() as cur:
-        for row, embedding in zip(rows, embeddings, strict=True):
-            cur.execute(
-                """
-                insert into chunks (
-                    course_id,
-                    presentation_id,
-                    video_file,
-                    slide_index,
-                    timestamp_start,
-                    timestamp_end,
-                    image_path,
-                    slide_text,
-                    spoken_text,
-                    chunk_text,
-                    metadata,
-                    embedding
-                ) values (
-                    %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, cast(%s as jsonb), cast(%s as vector)
-                )
-                """,
-                (
-                    course_id,
-                    presentation_id,
-                    video_file,
-                    row["slide_index"],
-                    row["timestamp_start"],
-                    row["timestamp_end"],
-                    row["image_path"],
-                    row["slide_text"],
-                    row["spoken_text"],
-                    row["chunk_text"],
-                    json.dumps(row["metadata"], ensure_ascii=False),
-                    vector_literal(embedding),
-                ),
-            )
-            inserted += 1
-
-    return inserted
-
-
 def main() -> int:
     resolved_default_db_url = default_db_url()
     parser = argparse.ArgumentParser(description="Embed transcription chunks and store them in Postgres")
@@ -303,10 +252,9 @@ def main() -> int:
     deleted = 0
     with connect_db(args.db_url) as conn:
         if args.replace_source:
-            with conn.cursor() as cur:
-                deleted = _replace_source(cur, args.course_id, args.presentation_id)
+            deleted = delete_chunks_for_source(conn, args.course_id, args.presentation_id)
 
-        inserted = _insert_rows(conn, rows, embeddings, args.course_id, args.presentation_id, video_file)
+        inserted = insert_chunk_rows(conn, rows, embeddings, args.course_id, args.presentation_id, video_file)
         conn.commit()
 
     print(f"Imported {inserted} rows from {input_path}")

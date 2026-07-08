@@ -1,15 +1,11 @@
 import json
 import os
 
-import psycopg
 from openai import APIError, OpenAI
 
 
 DEFAULTS = {
     "api_base_url": "https://api.berget.ai/v1",
-    "db_host": "localhost",
-    "db_name": "ragtest1",
-    "db_port": 5434,
     "embedding_model": "intfloat/multilingual-e5-large-instruct",
     "expected_embedding_dimensions": 1024,
 }
@@ -22,22 +18,6 @@ def format_embedding_input(text: str, role: str) -> str:
     if role == "query":
         return f"query: {text}"
     raise ValueError(f"Unsupported embedding role: {role}")
-
-
-def default_db_url() -> str | None:
-    user = os.environ.get("RAG_USER")
-    password = os.environ.get("RAG_PWD")
-    if not user or not password:
-        return None
-
-    return (
-        f"postgresql://{user}:{password}@{DEFAULTS['db_host']}:{DEFAULTS['db_port']}"
-        f"/{DEFAULTS['db_name']}"
-    )
-
-
-def connect_db(db_url: str):
-    return psycopg.connect(db_url)
 
 
 def create_client(api_base_url: str) -> OpenAI:
@@ -99,5 +79,82 @@ def embed_text(
     return embedding
 
 
-def vector_literal(embedding: list[float]) -> str:
-    return "[" + ",".join(str(value) for value in embedding) + "]"
+def chat_complete_raw(
+    client: OpenAI,
+    model: str,
+    messages: list[dict],
+    temperature: float,
+    max_tokens: int,
+    tools: list[dict] | None = None,
+    tool_choice=None,
+):
+    kwargs = {
+        "model": model,
+        "messages": messages,
+        "temperature": temperature,
+        "max_tokens": max_tokens,
+    }
+    if tools is not None:
+        kwargs["tools"] = tools
+    if tool_choice is not None:
+        kwargs["tool_choice"] = tool_choice
+
+    try:
+        return client.chat.completions.create(**kwargs)
+    except APIError as error:
+        raise RuntimeError(
+            f"Chat completion request failed for model {model}: {extract_error_details(error)}"
+        ) from error
+
+
+def chat_complete(
+    client: OpenAI,
+    model: str,
+    system_text: str,
+    user_text: str,
+    temperature: float,
+    max_tokens: int,
+) -> str:
+    result = chat_complete_raw(
+        client,
+        model,
+        messages=[
+            {"role": "system", "content": system_text},
+            {"role": "user", "content": user_text},
+        ],
+        temperature=temperature,
+        max_tokens=max_tokens,
+    )
+
+    if not result.choices:
+        return ""
+
+    message = result.choices[0].message
+    return message.content or ""
+
+
+def stream_chat_complete(
+    client: OpenAI,
+    model: str,
+    system_text: str,
+    user_text: str,
+    temperature: float,
+    max_tokens: int,
+):
+    try:
+        stream = client.chat.completions.create(
+            model=model,
+            messages=[
+                {"role": "system", "content": system_text},
+                {"role": "user", "content": user_text},
+            ],
+            temperature=temperature,
+            max_tokens=max_tokens,
+            stream=True,
+        )
+    except APIError as error:
+        raise RuntimeError(
+            f"Chat completion request failed for model {model}: {extract_error_details(error)}"
+        ) from error
+
+    return stream
