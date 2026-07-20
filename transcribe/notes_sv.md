@@ -31,9 +31,5 @@ uv run transcribe_pipeline.py ~/skogskurs/andreas_redin_skogsbruksplan.mp4 --cou
 
 uv run search_chunks.py "kasksakjkjsakjsakjsakjsaassa" --course-id "skogskurs" --min-similarity=0.7
 
-export RAG_USER=raguser
-export RAG_PWD=ragdev
-export BERGET_API_KEY=sk_ber_3lKYKcxFRTR2M76TxUa6bQagojehTyIRf2g0h_d24d6967e06cf8f3
-
 ------------------------------------------------------------------------------------------------------------
 

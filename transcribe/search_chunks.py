@@ -39,7 +39,7 @@ def main() -> int:
         matches = search_course_chunks(conn, args.course_id, embedding, args.min_similarity, args.limit)
 
     for match in matches:
-        print(f"{match['id']}\t{float(match['similarity']):.6f}")
+        print(f"{match['id']}\t{match['presentation_id']}\t{match['image_path']}\t{float(match['similarity']):.6f}")
     return 0
 
 

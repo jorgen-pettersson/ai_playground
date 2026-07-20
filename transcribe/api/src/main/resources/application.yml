@@ -1,3 +1,6 @@
+server:
+  port: 8101
+
 spring:
   application:
     name: rag-api
@@ -7,6 +10,7 @@ rag:
     api-base-url: ${BERGET_API_BASE_URL:https://api.berget.ai/v1}
     api-key: ${BERGET_API_KEY:}
   course-id: ${RAG_COURSE_ID:skogskurs}
+  slides-dir: ${RAG_SLIDES_DIR:../output/slides}
   embedding-model: ${RAG_EMBEDDING_MODEL:intfloat/multilingual-e5-large-instruct}
   expected-embedding-dimensions: ${RAG_EXPECTED_EMBEDDING_DIMENSIONS:1024}
   chat-model: ${RAG_CHAT_MODEL:openai/gpt-oss-120b}

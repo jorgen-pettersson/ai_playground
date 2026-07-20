@@ -10,7 +10,7 @@
         <relativePath/>
     </parent>
 
-    <groupId>se.jorgen.transcribe</groupId>
+    <groupId>se.jknowledge.transcribe</groupId>
     <artifactId>rag-api</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>rag-api</name>
@@ -31,7 +31,7 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-jdbc</artifactId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
