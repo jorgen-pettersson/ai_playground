@@ -139,6 +139,68 @@ def list_course_recordings(conn, course_id: str) -> list[str]:
         return recordings
 
 
+def list_slides_for_recording(conn, course_id: str, presentation_id: str) -> list[dict]:
+    with conn.cursor() as cur:
+        cur.execute(
+            """
+            select
+                presentation_id,
+                slide_index,
+                min(timestamp_start) as timestamp_start,
+                max(timestamp_end) as timestamp_end,
+                min(image_path) as image_path,
+                min(video_file) as video_file
+            from chunks
+            where course_id = %s
+              and presentation_id = %s
+              and slide_index is not null
+              and image_path is not null
+              and image_path <> ''
+            group by presentation_id, slide_index
+            order by slide_index asc
+            """,
+            (course_id, presentation_id),
+        )
+        columns = [description.name for description in cur.description]
+        slides = [dict(zip(columns, row, strict=True)) for row in cur.fetchall()]
+        log.info(
+            "list_slides_for_recording course_id=%s presentation_id=%s returned %s rows",
+            course_id,
+            presentation_id,
+            len(slides),
+        )
+        return slides
+
+
+def get_slide_for_recording(conn, course_id: str, presentation_id: str, slide_index: int) -> dict | None:
+    with conn.cursor() as cur:
+        cur.execute(
+            """
+            select
+                presentation_id,
+                slide_index,
+                min(timestamp_start) as timestamp_start,
+                max(timestamp_end) as timestamp_end,
+                min(image_path) as image_path,
+                min(video_file) as video_file
+            from chunks
+            where course_id = %s
+              and presentation_id = %s
+              and slide_index = %s
+              and image_path is not null
+              and image_path <> ''
+            group by presentation_id, slide_index
+            limit 1
+            """,
+            (course_id, presentation_id, slide_index),
+        )
+        row = cur.fetchone()
+        if not row:
+            return None
+        columns = [description.name for description in cur.description]
+        return dict(zip(columns, row, strict=True))
+
+
 def _vector_literal(embedding: list[float]) -> str:
     return "[" + ",".join(str(value) for value in embedding) + "]"
 

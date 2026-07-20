@@ -2,9 +2,12 @@ import json
 import logging
 import time
 import uuid
+from urllib.parse import quote
+from pathlib import Path
 from typing import Any
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import FileResponse
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, ConfigDict
 
@@ -14,6 +17,7 @@ from course_rag import DEFAULT_COURSE_ID, SYSTEM_PROMPT, answer_course_question,
 
 
 CHAT_MODEL_DEFAULT = "openai/gpt-oss-120b"
+SLIDES_DIR = (Path(__file__).resolve().parent / "output" / "slides").resolve()
 
 logging.basicConfig(level=logging.INFO)
 
@@ -210,6 +214,44 @@ def _build_chat_response(answer: str, model: str) -> dict[str, Any]:
     }
 
 
+def _slide_links_markdown(matches: list[dict], slide_base_url: str) -> str:
+    seen_paths = set()
+    lines = []
+
+    for match in matches:
+        image_path = match.get("image_path")
+        if not image_path:
+            continue
+
+        filename = Path(str(image_path)).name
+        if not filename or filename in seen_paths:
+            continue
+        seen_paths.add(filename)
+
+        presentation_name = match.get("presentation_id") or match.get("video_file") or "presentation"
+        slide_index = match.get("slide_index")
+        if slide_index is not None:
+            label = f"{presentation_name} slide {slide_index}"
+        else:
+            label = str(presentation_name)
+        lines.append(f"- [{label}]({slide_base_url}{quote(filename)})")
+
+    if not lines:
+        return ""
+
+    return "\n\nSlides:\n" + "\n".join(lines)
+
+
+def _append_slide_links(answer: str, matches: list[dict], slide_base_url: str) -> str:
+    suffix = _slide_links_markdown(matches, slide_base_url)
+    if not suffix:
+        return answer
+    base = answer.rstrip()
+    if not base:
+        return suffix.lstrip()
+    return base + suffix
+
+
 def _sse_message(payload: dict[str, Any]) -> str:
     return f"data: {json.dumps(payload, ensure_ascii=False)}\n\n"
 
@@ -293,6 +335,20 @@ def health() -> dict[str, str]:
     return {"status": "ok"}
 
 
+@app.get("/slides/{filename}")
+def get_slide(filename: str):
+    file_path = (SLIDES_DIR / filename).resolve()
+    try:
+        file_path.relative_to(SLIDES_DIR)
+    except ValueError as error:
+        raise HTTPException(status_code=400, detail="Invalid slide path") from error
+
+    if not file_path.is_file():
+        raise HTTPException(status_code=404, detail="Slide not found")
+
+    return FileResponse(file_path)
+
+
 @app.get("/v1/models")
 def list_models() -> dict[str, Any]:
     model_cards = [ModelCard(id=CHAT_MODEL_DEFAULT)]
@@ -303,10 +359,12 @@ def list_models() -> dict[str, Any]:
 
 
 @app.post("/v1/chat/completions")
-def chat_completions(request: ChatCompletionRequest) -> Any:
+def chat_completions(request: ChatCompletionRequest, http_request: Request) -> Any:
     db_url = default_db_url()
     if not db_url:
         raise HTTPException(status_code=500, detail="Database URL is not configured. Set RAG_USER and RAG_PWD.")
+
+    slide_base_url = str(http_request.base_url).rstrip("/") + "/slides/"
 
     if request.tools:
         log.info("Ignoring %s client-provided tool(s); using backend-supported tools only", len(request.tools))
@@ -350,6 +408,7 @@ def chat_completions(request: ChatCompletionRequest) -> Any:
                 limit=5,
             )
             answer = _complete_with_tools(question, prepared, request, db_url)
+            answer = _append_slide_links(answer, prepared["matches"], slide_base_url)
             return _build_chat_response(answer, request.model)
 
         result = answer_course_question(
@@ -374,4 +433,5 @@ def chat_completions(request: ChatCompletionRequest) -> Any:
     except Exception as error:
         raise HTTPException(status_code=500, detail=str(error)) from error
 
-    return _build_chat_response(result["answer"], request.model)
+    answer = _append_slide_links(result["answer"], result["matches"], slide_base_url)
+    return _build_chat_response(answer, request.model)

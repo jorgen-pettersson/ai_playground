@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rag-api-config
+  namespace: aiplayground
+data:
+  BERGET_API_BASE_URL: https://api.berget.ai/v1
+  RAG_COURSE_ID: skogskurs
+  RAG_SLIDES_DIR: /app/output/slides
+  RAG_EMBEDDING_MODEL: intfloat/multilingual-e5-large-instruct
+  RAG_EXPECTED_EMBEDDING_DIMENSIONS: "1024"
+  RAG_CHAT_MODEL: openai/gpt-oss-120b
+  RAG_MIN_SIMILARITY: "0.7"
+  RAG_LIMIT: "5"

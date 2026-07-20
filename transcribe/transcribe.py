@@ -21,8 +21,6 @@ from openai import OpenAI
 log = logging.getLogger("recorder")
 logging.basicConfig(level=logging.INFO)
 
-# sk_ber_3mr5qhdaJgpw7AA5DorpfvGKesnRDr9uxtmfD_4c881edc3ef944d3
-
 DEFAULTS = {
     "whisper_model": "KBLab/kb-whisper-large",
     "llm_model": "mistralai/Mistral-Small-3.2-24B-Instruct-2506",
