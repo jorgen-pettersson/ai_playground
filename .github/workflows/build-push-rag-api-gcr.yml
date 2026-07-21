@@ -35,16 +35,22 @@ jobs:
         run: mkdir -p transcribe/output/slides
 
       - name: Authenticate to Google Cloud
+        id: auth
         uses: google-github-actions/auth@v2
         with:
           workload_identity_provider: projects/119210083484/locations/global/workloadIdentityPools/github-pool/providers/github-provider
           service_account: github-actions-aiplaygroud@myforesttracker.iam.gserviceaccount.com
+          token_format: access_token
 
       - name: Set up gcloud
         uses: google-github-actions/setup-gcloud@v2
 
-      - name: Configure Docker for Artifact Registry
-        run: gcloud auth configure-docker europe-north1-docker.pkg.dev --quiet
+      - name: Log in to Artifact Registry
+        uses: docker/login-action@v3
+        with:
+          registry: europe-north1-docker.pkg.dev
+          username: oauth2accesstoken
+          password: ${{ steps.auth.outputs.access_token }}
 
       - name: Compute short SHA
         id: shortsha
