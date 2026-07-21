@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: rag-api
-          image: ghcr.io/example/rag-api:latest
+          image: europe-north1-docker.pkg.dev/myforesttracker/myforesttracker/rag-api:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8101

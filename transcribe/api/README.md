@@ -59,7 +59,7 @@ and the app uses:
 
 - `RAG_SLIDES_DIR=/app/output/slides`
 
-## GitHub Actions: Build and Push to GCR
+## GitHub Actions: Build and Push to Artifact Registry
 
 Workflow file:
 
@@ -67,19 +67,19 @@ Workflow file:
 
 The workflow builds `api/Dockerfile` and pushes to:
 
-- `gcr.io/<GCP_PROJECT_ID>/rag-api`
+- `europe-north1-docker.pkg.dev/myforesttracker/myforesttracker/rag-api`
 
 ### Required GitHub configuration
 
-Repository variable:
+The workflow uses GitHub OIDC with Workload Identity Federation and the service account:
 
-- `GCP_PROJECT_ID`
+- `github-actions-aiplaygroud@myforesttracker.iam.gserviceaccount.com`
 
-Repository secret:
+It expects the workload identity provider:
 
-- `GCP_SA_KEY`
+- `projects/119210083484/locations/global/workloadIdentityPools/github-pool/providers/github-provider`
 
-`GCP_SA_KEY` should contain the full JSON service account key with permission to push images to GCR.
+So no long-lived JSON key secret is required in GitHub for the container push flow.
 
 ### Current slide behavior in CI
 
