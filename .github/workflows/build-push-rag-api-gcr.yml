@@ -5,8 +5,8 @@ on:
     branches:
       - main
     paths:
-      - 'api/**'
-      - '.dockerignore'
+      - 'transcribe/api/**'
+      - 'transcribe/.dockerignore'
       - '.github/workflows/build-push-rag-api-gcr.yml'
   workflow_dispatch:
 
@@ -27,7 +27,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Ensure slides directory exists for Docker build
-        run: mkdir -p output/slides
+        run: mkdir -p transcribe/output/slides
 
       - name: Log in to GCR
         uses: docker/login-action@v3
@@ -49,8 +49,8 @@ jobs:
       - name: Build and push image
         uses: docker/build-push-action@v6
         with:
-          context: .
-          file: api/Dockerfile
+          context: ./transcribe
+          file: ./transcribe/api/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
