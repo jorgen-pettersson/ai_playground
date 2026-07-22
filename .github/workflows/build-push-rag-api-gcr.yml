@@ -39,7 +39,7 @@ jobs:
         uses: google-github-actions/auth@v2
         with:
           workload_identity_provider: projects/119210083484/locations/global/workloadIdentityPools/github-pool/providers/github-provider
-          service_account: github-actions-aiplaygroud@myforesttracker.iam.gserviceaccount.com
+          service_account: github-actions-aiplaygroud-myf@myforesttracker.iam.gserviceaccount.com
           token_format: access_token
 
       - name: Set up gcloud
