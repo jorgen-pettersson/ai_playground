@@ -31,6 +31,11 @@ jobs:
       - name: Build with Maven
         run: mvn -B package --file transcribe/api/pom.xml
 
+      - name: Ensure slides directory exists for Docker build
+        run: |
+          mkdir -p transcribe/output/slides
+          touch transcribe/output/slides/.keep
+
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
