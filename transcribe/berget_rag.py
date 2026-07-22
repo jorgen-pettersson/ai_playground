@@ -3,7 +3,7 @@ import os
 
 from openai import APIError, OpenAI
 
-# dummy change
+# dummy change mytest
 DEFAULTS = {
     "api_base_url": "https://api.berget.ai/v1",
     "embedding_model": "intfloat/multilingual-e5-large-instruct",
