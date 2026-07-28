@@ -40,8 +40,7 @@ jobs:
         uses: google-github-actions/auth@v2
         with:
           workload_identity_provider: projects/119210083484/locations/global/workloadIdentityPools/github-pool/providers/github-provider
-          service_account: github-actions-bff@myforesttracker.iam.gserviceaccount.com
-          #service_account: github-actions-aiplaygroud-myf@myforesttracker.iam.gserviceaccount.com
+          service_account: github-actions-aiplaygroud-myf@myforesttracker.iam.gserviceaccount.com
 
       - name: Set up gcloud
         uses: google-github-actions/setup-gcloud@v2
@@ -56,6 +55,11 @@ jobs:
       - name: Build Docker image
         run: docker build -f transcribe/api/Dockerfile -t europe-north1-docker.pkg.dev/myforesttracker/myforesttracker/rag-api:${{ steps.shortsha.outputs.short_sha }} transcribe
 
+      - name: Show active GCP identity
+        run: |
+          gcloud auth list
+          gcloud config list
+          
       - name: Push Docker image
         run: docker push europe-north1-docker.pkg.dev/myforesttracker/myforesttracker/rag-api:${{ steps.shortsha.outputs.short_sha }}
 
