@@ -70,17 +70,24 @@ jobs:
         env:
           SHORT_SHA: ${{ steps.shortsha.outputs.short_sha }}
 
+      - name: Update stage image tag
+        uses: mikefarah/yq@v4
+        with:
+          cmd: yq -i '.images[] |= (select(.name == "europe-north1-docker.pkg.dev/myforesttracker/myforesttracker/rag-api") .newTag = strenv(SHORT_SHA))' transcribe/api/k8s/overlays/stage/kustomization.yaml
+        env:
+          SHORT_SHA: ${{ steps.shortsha.outputs.short_sha }}
+
       - name: Configure git author
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Commit and push dev tag update
+      - name: Commit and push overlay tag updates
         run: |
           if git diff --quiet; then
             echo "No changes to commit."
             exit 0
           fi
-          git add transcribe/api/k8s/overlays/dev/kustomization.yaml
+          git add transcribe/api/k8s/overlays/dev/kustomization.yaml transcribe/api/k8s/overlays/stage/kustomization.yaml
           git commit -m "chore: update rag-api image tag to ${{ steps.shortsha.outputs.short_sha }}"
           git push
