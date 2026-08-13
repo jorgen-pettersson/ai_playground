@@ -4,7 +4,7 @@ resources:
   - ../../base
 images:
   - name: europe-north1-docker.pkg.dev/myforesttracker/myforesttracker/rag-api
-    newTag: 68f643a
+    newTag: 344f0e6
 patches:
   - path: route-patch.yaml
     target:
@@ -13,4 +13,4 @@ patches:
   - path: gateway-https-patch.yaml
     target:
       kind: Gateway
-      name: aiplayground-gw    
+      name: aiplayground-gw
