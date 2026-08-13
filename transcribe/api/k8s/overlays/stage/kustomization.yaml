@@ -5,7 +5,7 @@ resources:
   - certificate.yaml
 images:
   - name: europe-north1-docker.pkg.dev/myforesttracker/myforesttracker/rag-api
-    newTag: "000e141"
+    newTag: "2b45cb7"
 patches:
   - path: route-patch.yaml
     target:
