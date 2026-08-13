@@ -2,6 +2,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ../../base
+  - certificate.yaml
 images:
   - name: europe-north1-docker.pkg.dev/myforesttracker/myforesttracker/rag-api
     newTag: "000e141"

@@ -9,7 +9,6 @@ resources:
   - ingress.yaml
   - apigateway.yaml
   - route.yaml
-  - secret2.yaml
 labels:
   - pairs:
       app.kubernetes.io/name: rag-api
