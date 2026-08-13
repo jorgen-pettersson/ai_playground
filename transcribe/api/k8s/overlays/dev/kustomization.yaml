@@ -4,4 +4,4 @@ resources:
   - ../../base
 images:
   - name: europe-north1-docker.pkg.dev/myforesttracker/myforesttracker/rag-api
-    newTag: e912803
+    newTag: 68f643a
