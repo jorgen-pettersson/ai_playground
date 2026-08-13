@@ -33,8 +33,11 @@ jobs:
 
       - name: Ensure slides directory exists for Docker build
         run: |
-          mkdir -p transcribe/output/slides
-          touch transcribe/output/slides/.keep
+          mkdir -p transcribe/api/output/slides
+          if [ -d transcribe/output/slides ]; then
+            cp -a transcribe/output/slides/. transcribe/api/output/slides/ || true
+          fi
+          touch transcribe/api/output/slides/.keep
 
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
@@ -53,7 +56,7 @@ jobs:
         run: echo "short_sha=$(git rev-parse --short=7 ${{ github.sha }})" >> $GITHUB_OUTPUT
 
       - name: Build Docker image
-        run: docker build -f transcribe/api/Dockerfile -t europe-north1-docker.pkg.dev/myforesttracker/myforesttracker/rag-api:${{ steps.shortsha.outputs.short_sha }} transcribe
+        run: docker build -f transcribe/api/Dockerfile -t europe-north1-docker.pkg.dev/myforesttracker/myforesttracker/rag-api:${{ steps.shortsha.outputs.short_sha }} transcribe/api
 
       - name: Show active GCP identity
         run: |

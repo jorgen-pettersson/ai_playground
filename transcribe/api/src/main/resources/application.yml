@@ -4,11 +4,30 @@ server:
 spring:
   application:
     name: rag-api
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5499/rag}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      initialization-fail-timeout: -1
+      connection-timeout: 3000
+  jpa:
+    hibernate:
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:none}
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  rabbitmq:
+    host: ${QUEUE_MCP_HOST:localhost}
+    username: ${QUEUE_MCP_USER:mcp}
+    password: ${QUEUE_MCP_PASSWORD:internal123}
 
 rag:
   berget:
     api-base-url: ${BERGET_API_BASE_URL:https://api.berget.ai/v1}
-    api-key: ${BERGET_API_KEY:}
+    api-key: ${BERGET_API_KEY:1}
   course-id: ${RAG_COURSE_ID:skogskurs}
   slides-dir: ${RAG_SLIDES_DIR:../output/slides}
   embedding-model: ${RAG_EMBEDDING_MODEL:intfloat/multilingual-e5-large-instruct}
@@ -17,3 +36,6 @@ rag:
   retrieval:
     min-similarity: ${RAG_MIN_SIMILARITY:0.7}
     limit: ${RAG_LIMIT:5}
+
+rabbitmq:
+  queue-name: ${QUEUE_MCP_NAME:mcp_messages}

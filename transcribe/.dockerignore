@@ -5,6 +5,8 @@
 !api/pom.xml
 !api/src/
 !api/src/**
+!api/target/
+!api/target/rag-api-0.0.1-SNAPSHOT.jar
 !output/
 !output/slides/
 !output/slides/**
@@ -13,6 +15,5 @@
 .venv/
 __pycache__/
 cache/
-api/target/
 api/.env
 api/.vscode/

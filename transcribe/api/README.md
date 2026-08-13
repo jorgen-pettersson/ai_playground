@@ -33,11 +33,20 @@ curl http://localhost:8101/v1/models
 
 ## Docker Build
 
-Build from the `transcribe/` directory because the Docker image also includes `output/slides/`.
+First build the jar:
 
 ```bash
-cd ..
-docker build -f api/Dockerfile -t rag-api:dev .
+cd api
+mvn -DskipTests package
+```
+
+Then prepare the local slide directory used by the image build and build the image from `transcribe/api`.
+
+```bash
+mkdir -p output/slides
+cp -a ../output/slides/. output/slides/ 2>/dev/null || true
+touch output/slides/.keep
+docker build -t rag-api:dev .
 ```
 
 Run the image:

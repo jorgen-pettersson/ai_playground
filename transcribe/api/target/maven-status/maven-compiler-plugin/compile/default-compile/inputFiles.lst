@@ -1,9 +1,12 @@
 /home/jorgen/dev/ai_playground/transcribe/api/src/main/java/se/jknowledge/transcribe/api/ApiApplication.java
 /home/jorgen/dev/ai_playground/transcribe/api/src/main/java/se/jknowledge/transcribe/api/client/BergetApiClient.java
+/home/jorgen/dev/ai_playground/transcribe/api/src/main/java/se/jknowledge/transcribe/api/config/RabbitMqProperties.java
 /home/jorgen/dev/ai_playground/transcribe/api/src/main/java/se/jknowledge/transcribe/api/config/RagProperties.java
 /home/jorgen/dev/ai_playground/transcribe/api/src/main/java/se/jknowledge/transcribe/api/controller/ChatCompletionsController.java
+/home/jorgen/dev/ai_playground/transcribe/api/src/main/java/se/jknowledge/transcribe/api/controller/DatabaseExceptionHandler.java
 /home/jorgen/dev/ai_playground/transcribe/api/src/main/java/se/jknowledge/transcribe/api/controller/HealthController.java
 /home/jorgen/dev/ai_playground/transcribe/api/src/main/java/se/jknowledge/transcribe/api/controller/ModelsController.java
+/home/jorgen/dev/ai_playground/transcribe/api/src/main/java/se/jknowledge/transcribe/api/controller/RabbitMqController.java
 /home/jorgen/dev/ai_playground/transcribe/api/src/main/java/se/jknowledge/transcribe/api/controller/SlidesController.java
 /home/jorgen/dev/ai_playground/transcribe/api/src/main/java/se/jknowledge/transcribe/api/model/ChunkEntity.java
 /home/jorgen/dev/ai_playground/transcribe/api/src/main/java/se/jknowledge/transcribe/api/model/ChunkMatch.java
@@ -14,3 +17,4 @@
 /home/jorgen/dev/ai_playground/transcribe/api/src/main/java/se/jknowledge/transcribe/api/service/ChunkSearchService.java
 /home/jorgen/dev/ai_playground/transcribe/api/src/main/java/se/jknowledge/transcribe/api/service/CourseRagService.java
 /home/jorgen/dev/ai_playground/transcribe/api/src/main/java/se/jknowledge/transcribe/api/service/PromptBuilder.java
+/home/jorgen/dev/ai_playground/transcribe/api/src/main/java/se/jknowledge/transcribe/api/service/RabbitMqService.java

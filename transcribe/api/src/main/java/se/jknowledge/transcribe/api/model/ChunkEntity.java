@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "chunks")
 public class ChunkEntity {
@@ -25,10 +27,10 @@ public class ChunkEntity {
     private Integer slideIndex;
 
     @Column(name = "timestamp_start")
-    private Double timestampStart;
+    private BigDecimal timestampStart;
 
     @Column(name = "timestamp_end")
-    private Double timestampEnd;
+    private BigDecimal timestampEnd;
 
     @Column(name = "image_path")
     private String imagePath;
@@ -79,19 +81,19 @@ public class ChunkEntity {
         this.slideIndex = slideIndex;
     }
 
-    public Double getTimestampStart() {
+    public BigDecimal getTimestampStart() {
         return timestampStart;
     }
 
-    public void setTimestampStart(Double timestampStart) {
+    public void setTimestampStart(BigDecimal timestampStart) {
         this.timestampStart = timestampStart;
     }
 
-    public Double getTimestampEnd() {
+    public BigDecimal getTimestampEnd() {
         return timestampEnd;
     }
 
-    public void setTimestampEnd(Double timestampEnd) {
+    public void setTimestampEnd(BigDecimal timestampEnd) {
         this.timestampEnd = timestampEnd;
     }
 
