@@ -1,0 +1,14 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: aiplayground-gw
+spec:
+  listeners:
+  - name: https
+    protocol: HTTPS
+    port: 443
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: aiplayground-tls
