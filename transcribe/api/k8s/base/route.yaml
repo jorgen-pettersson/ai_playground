@@ -13,5 +13,5 @@ spec:
             type: PathPrefix
             value: /
       backendRefs:
-        - name: aiplayground
+        - name: rag-api
           port: 8101
