@@ -1,0 +1,17 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: aiplayground-route
+spec:
+  parentRefs:
+    - name: aiplayground-gw
+  #hostnames:
+  #  - "myforesttracker.local"
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: aiplayground
+          port: 8101
